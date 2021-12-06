@@ -13,12 +13,12 @@ import IAuthTokenProvider from './IAuthTokenProvider';
 
 export class ContentDeliveryAPI implements IContentDeliveryAPi
 {
-    public readonly ContentService: string = 'api/episerver/v2.0/content/';
-    public readonly SiteService: string    = 'api/episerver/v2.0/site/';
+    public readonly ContentService: string = 'api/episerver/v3.0/content/';
+    public readonly SiteService: string    = 'api/episerver/v3.0/site/';
     public readonly MethodService: string  = 'api/episerver/v3/action/';
     public readonly AuthService: string    = 'api/episerver/auth/token';
     public readonly ModelService: string   = 'api/episerver/v3/model/';
-    public readonly SearchService: string  = 'api/episerver/v2.0/search/content';
+    public readonly SearchService: string  = 'api/episerver/v3.0/search/content';
 
     private _config : ContentDeliveryApiConfig;
     private _axios : AxiosInstance;

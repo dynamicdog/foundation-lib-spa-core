@@ -18,7 +18,9 @@ import IAuthTokenProvider from './IAuthTokenProvider';
 
 export class ContentDeliveryAPI implements IContentDeliveryAPi {
   public readonly ContentService: string = 'api/episerver/v3.0/content/';
+  public readonly ContentServiceV3: string = 'api/episerver/v3.0/content/';
   public readonly SiteService: string = 'api/episerver/v3.0/site/';
+  public readonly SiteServiceV3: string = 'api/episerver/v3.0/site/';
   public readonly MethodService: string = 'api/episerver/v3/action/';
   public readonly AuthService: string = 'api/episerver/auth/token';
   public readonly ModelService: string = 'api/episerver/v3/model/';
@@ -126,13 +128,13 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   }
 
   public getWebsites(): Promise<WebsiteList> {
-    return this.doRequest<WebsiteList>(this.SiteService)
+    return this.doRequest<WebsiteList>(this.SiteServiceV3)
       .then((r) => (isNetworkError(r) ? [] : r))
       .catch(() => []);
   }
 
   public async getWebsite(hostname?: string | URL): Promise<Website | undefined> {
-    let processedHost: string = '';
+    let processedHost = '';
     switch (typeof hostname) {
       case 'undefined':
         processedHost = '';
@@ -176,7 +178,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
     expand?: string[],
   ): Promise<PathResponse<T, C | NetworkErrorData>> {
     // Try CD-API 2.17+ method first
-    const contentServiceUrl = new URL(this.ContentService, this.BaseURL);
+    const contentServiceUrl = new URL(this.ContentServiceV3, this.BaseURL);
     contentServiceUrl.searchParams.set('contentUrl', path);
     if (select) contentServiceUrl.searchParams.set('select', select.join(','));
     if (expand) contentServiceUrl.searchParams.set('expand', expand.join(','));
@@ -205,7 +207,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   ): Promise<C | NetworkErrorData> {
     // Create base URL
     const apiId = ContentLinkService.createApiId(id, !this.InEditMode, this.InEditMode);
-    const url = new URL(this.ContentService + apiId, this.BaseURL);
+    const url = new URL(this.ContentServiceV3 + apiId, this.BaseURL);
 
     // Handle additional parameters
     if (select) url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -247,7 +249,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
       }
     });
 
-    const url: URL = new URL(this.ContentService, this.BaseURL);
+    const url: URL = new URL(this.ContentServiceV3, this.BaseURL);
     if (refs) url.searchParams.set('references', refs.map((s) => encodeURIComponent(s)).join(','));
     if (guids) url.searchParams.set('guids', guids.map((s) => encodeURIComponent(s)).join(','));
     if (select) url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -330,7 +332,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   public getAncestors(id: ContentReference, select?: string[], expand?: string[]): Promise<IContent[]> {
     // Create base URL
     const apiId = ContentLinkService.createApiId(id, !this.InEditMode, this.InEditMode);
-    const url = new URL(this.ContentService + apiId + '/ancestors', this.BaseURL);
+    const url = new URL(this.ContentServiceV3 + apiId + '/ancestors', this.BaseURL);
 
     // Handle additional parameters
     if (select) url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -345,7 +347,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   public getChildren(id: ContentReference, select?: string[], expand?: string[]): Promise<IContent[]> {
     // Create base URL
     const apiId = ContentLinkService.createApiId(id, !this.InEditMode, this.InEditMode);
-    const url = new URL(this.ContentService + apiId + '/children', this.BaseURL);
+    const url = new URL(this.ContentServiceV3 + apiId + '/children', this.BaseURL);
 
     // Handle additional parameters
     if (select) url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -414,11 +416,11 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
     const reqUrl: URL = typeof url === 'string' ? new URL(url) : url;
     const serviceUrls: URL[] = [
       new URL(this.AuthService, this.BaseURL),
-      new URL(this.ContentService, this.BaseURL),
+      new URL(this.ContentServiceV3, this.BaseURL),
       new URL(this.MethodService, this.BaseURL),
-      new URL(this.SiteService, this.BaseURL),
+      new URL(this.SiteServiceV3, this.BaseURL),
     ];
-    let isServiceURL: boolean = false;
+    let isServiceURL = false;
     serviceUrls?.forEach((u) => (isServiceURL = isServiceURL || reqUrl.href.startsWith(u.href)));
     return isServiceURL;
   }
@@ -426,7 +428,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   public raw<TypeOut>(
     url: string | URL,
     options: Partial<AxiosRequestConfig> = {},
-    addDefaultQueryParams: boolean = true,
+    addDefaultQueryParams = true,
   ): Promise<IContentDeliveryResponse<TypeOut | NetworkErrorData>> {
     return this.doAdvancedRequest<TypeOut>(url, options, addDefaultQueryParams, true);
   }
@@ -439,7 +441,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   private async doRequest<T>(
     url: string | URL,
     options: Partial<AxiosRequestConfig> = {},
-    addDefaultQueryParams: boolean = true,
+    addDefaultQueryParams = true,
   ): Promise<T | NetworkErrorData> {
     const [responseData, responseInfo] = await this.doAdvancedRequest<T>(url, options, addDefaultQueryParams);
     return responseData;
@@ -448,8 +450,8 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
   protected async doAdvancedRequest<T>(
     url: string | URL,
     options: Partial<AxiosRequestConfig> = {},
-    addDefaultQueryParams: boolean = true,
-    returnOnError: boolean = false,
+    addDefaultQueryParams = true,
+    returnOnError = false,
   ): Promise<IContentDeliveryResponse<T | NetworkErrorData>> {
     // Pre-process URL
     const requestUrl: URL = typeof url === 'string' ? new URL(url, this.BaseURL) : url;
@@ -472,7 +474,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
         }
       }
       if (
-        requestUrl.pathname.indexOf(this.ContentService) &&
+        requestUrl.pathname.indexOf(this.ContentServiceV3) &&
         this._config.AutoExpandAll &&
         !requestUrl.searchParams.has('expand')
       ) {
@@ -581,7 +583,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
     };
   }
 
-  protected errorCounter: number = 0;
+  protected errorCounter = 0;
 
   protected createNetworkErrorResponse<T extends unknown = any>(
     error: T,

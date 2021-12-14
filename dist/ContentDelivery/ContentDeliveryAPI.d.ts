@@ -11,7 +11,9 @@ import { IOAuthRequest, IOAuthResponse } from './IAuthService';
 import IAuthTokenProvider from './IAuthTokenProvider';
 export declare class ContentDeliveryAPI implements IContentDeliveryAPi {
     readonly ContentService: string;
+    readonly ContentServiceV3: string;
     readonly SiteService: string;
+    readonly SiteServiceV3: string;
     readonly MethodService: string;
     readonly AuthService: string;
     readonly ModelService: string;

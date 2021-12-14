@@ -18,7 +18,9 @@ import { networkErrorToOAuthError } from './IAuthService';
 export class ContentDeliveryAPI {
     constructor(config) {
         this.ContentService = 'api/episerver/v3.0/content/';
+        this.ContentServiceV3 = 'api/episerver/v3.0/content/';
         this.SiteService = 'api/episerver/v3.0/site/';
+        this.SiteServiceV3 = 'api/episerver/v3.0/site/';
         this.MethodService = 'api/episerver/v3/action/';
         this.AuthService = 'api/episerver/auth/token';
         this.ModelService = 'api/episerver/v3/model/';
@@ -99,7 +101,7 @@ export class ContentDeliveryAPI {
             .then((r) => (isNetworkError(r) ? networkErrorToOAuthError(r) : r));
     }
     getWebsites() {
-        return this.doRequest(this.SiteService)
+        return this.doRequest(this.SiteServiceV3)
             .then((r) => (isNetworkError(r) ? [] : r))
             .catch(() => []);
     }
@@ -150,7 +152,7 @@ export class ContentDeliveryAPI {
     resolveRoute(path, select, expand) {
         return __awaiter(this, void 0, void 0, function* () {
             // Try CD-API 2.17+ method first
-            const contentServiceUrl = new URL(this.ContentService, this.BaseURL);
+            const contentServiceUrl = new URL(this.ContentServiceV3, this.BaseURL);
             contentServiceUrl.searchParams.set('contentUrl', path);
             if (select)
                 contentServiceUrl.searchParams.set('select', select.join(','));
@@ -180,7 +182,7 @@ export class ContentDeliveryAPI {
     getContent(id, select, expand) {
         // Create base URL
         const apiId = ContentLinkService.createApiId(id, !this.InEditMode, this.InEditMode);
-        const url = new URL(this.ContentService + apiId, this.BaseURL);
+        const url = new URL(this.ContentServiceV3 + apiId, this.BaseURL);
         // Handle additional parameters
         if (select)
             url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -217,7 +219,7 @@ export class ContentDeliveryAPI {
                 refs.push(apiId);
             }
         });
-        const url = new URL(this.ContentService, this.BaseURL);
+        const url = new URL(this.ContentServiceV3, this.BaseURL);
         if (refs)
             url.searchParams.set('references', refs.map((s) => encodeURIComponent(s)).join(','));
         if (guids)
@@ -293,7 +295,7 @@ export class ContentDeliveryAPI {
     getAncestors(id, select, expand) {
         // Create base URL
         const apiId = ContentLinkService.createApiId(id, !this.InEditMode, this.InEditMode);
-        const url = new URL(this.ContentService + apiId + '/ancestors', this.BaseURL);
+        const url = new URL(this.ContentServiceV3 + apiId + '/ancestors', this.BaseURL);
         // Handle additional parameters
         if (select)
             url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -307,7 +309,7 @@ export class ContentDeliveryAPI {
     getChildren(id, select, expand) {
         // Create base URL
         const apiId = ContentLinkService.createApiId(id, !this.InEditMode, this.InEditMode);
-        const url = new URL(this.ContentService + apiId + '/children', this.BaseURL);
+        const url = new URL(this.ContentServiceV3 + apiId + '/children', this.BaseURL);
         // Handle additional parameters
         if (select)
             url.searchParams.set('select', select.map((s) => encodeURIComponent(s)).join(','));
@@ -365,9 +367,9 @@ export class ContentDeliveryAPI {
         const reqUrl = typeof url === 'string' ? new URL(url) : url;
         const serviceUrls = [
             new URL(this.AuthService, this.BaseURL),
-            new URL(this.ContentService, this.BaseURL),
+            new URL(this.ContentServiceV3, this.BaseURL),
             new URL(this.MethodService, this.BaseURL),
-            new URL(this.SiteService, this.BaseURL),
+            new URL(this.SiteServiceV3, this.BaseURL),
         ];
         let isServiceURL = false;
         serviceUrls === null || serviceUrls === void 0 ? void 0 : serviceUrls.forEach((u) => (isServiceURL = isServiceURL || reqUrl.href.startsWith(u.href)));
@@ -409,7 +411,7 @@ export class ContentDeliveryAPI {
                         // Ignore on purpose
                     }
                 }
-                if (requestUrl.pathname.indexOf(this.ContentService) &&
+                if (requestUrl.pathname.indexOf(this.ContentServiceV3) &&
                     this._config.AutoExpandAll &&
                     !requestUrl.searchParams.has('expand')) {
                     requestUrl.searchParams.set('expand', '*');

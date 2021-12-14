@@ -22,7 +22,9 @@ export declare function getIContentFromPathResponse<IContentType extends IConten
 export declare class ContentDeliveryAPI {
     protected config: AppConfig;
     protected componentService: string;
+    protected componentServiceV3: string;
     protected websiteService: string;
+    protected websiteServiceV3: string;
     protected methodService: string;
     protected debug: boolean;
     protected pathProvider: PathProvider;

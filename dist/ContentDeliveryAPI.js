@@ -43,7 +43,7 @@ export class ContentDeliveryAPI {
      * @deprecated
      */
     constructor(pathProvider, config) {
-        this.componentService = '/api/episerver/v2.0/content/';
+        this.componentService = '/api/episerver/v3.0/content/';
         this.websiteService = '/api/episerver/v3/site/';
         this.methodService = '/api/episerver/v3/action/';
         this.debug = false;
@@ -150,9 +150,11 @@ export class ContentDeliveryAPI {
             if (this.config.autoExpandRequests) {
                 serviceUrl.searchParams.append('expand', '*');
             }
-            return this.doRequest(serviceUrl.href).catch((r) => {
+            return this.doRequest(serviceUrl.href)
+                .catch((r) => {
                 return this.buildNetworkError(r);
-            }).then(r => getIContentFromPathResponse(r));
+            })
+                .then((r) => getIContentFromPathResponse(r));
         });
     }
     getContentsByRefs(refs) {

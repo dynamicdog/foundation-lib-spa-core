@@ -12,7 +12,7 @@ export type PathResponse<T = any, C extends IContent = IContent> = C | ActionRes
 
 export type NetworkErrorData<T = any> = IContent & {
   error: Property<T>;
-}
+};
 
 export function PathResponseIsIContent(iContent: PathResponse): iContent is IContent {
   if ((iContent as ActionResponse<any>).actionName) {
@@ -20,15 +20,17 @@ export function PathResponseIsIContent(iContent: PathResponse): iContent is ICon
   }
   return true;
 }
-export function PathResponseIsActionResponse<P extends any = any>(actionResponse: PathResponse): actionResponse is ActionResponse<P>
-{
+export function PathResponseIsActionResponse<P extends any = any>(
+  actionResponse: PathResponse,
+): actionResponse is ActionResponse<P> {
   if ((actionResponse as ActionResponse<P>).actionName) {
     return true;
   }
   return false;
 }
-export function getIContentFromPathResponse<IContentType extends IContent = IContent>(response: PathResponse<any, IContentType>) : IContentType | null
-{
+export function getIContentFromPathResponse<IContentType extends IContent = IContent>(
+  response: PathResponse<any, IContentType>,
+): IContentType | null {
   if (PathResponseIsActionResponse(response)) {
     return response.currentContent;
   }
@@ -40,12 +42,12 @@ export function getIContentFromPathResponse<IContentType extends IContent = ICon
 
 /**
  * ContentDelivery API Wrapper
- * 
+ *
  * @deprecated
  */
 export class ContentDeliveryAPI {
   protected config: AppConfig;
-  protected componentService: string = '/api/episerver/v2.0/content/';
+  protected componentService: string = '/api/episerver/v3.0/content/';
   protected websiteService: string = '/api/episerver/v3/site/';
   protected methodService: string = '/api/episerver/v3/action/';
   protected debug: boolean = false;
@@ -72,7 +74,7 @@ export class ContentDeliveryAPI {
 
   /**
    * ContentDelivery API Wrapper
-   * 
+   *
    * @deprecated
    */
   constructor(pathProvider: PathProvider, config: AppConfig) {
@@ -81,13 +83,11 @@ export class ContentDeliveryAPI {
     this.debug = this.config.enableDebug === true;
   }
 
-  public get currentPathProvider() : PathProvider
-  {
+  public get currentPathProvider(): PathProvider {
     return this.pathProvider;
   }
 
-  public get currentConfig() : AppConfig
-  {
+  public get currentConfig(): AppConfig {
     return this.config;
   }
 
@@ -187,9 +187,11 @@ export class ContentDeliveryAPI {
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
     }
-    return this.doRequest<PathResponse>(serviceUrl.href).catch((r) => {
-      return this.buildNetworkError(r);
-    }).then(r => getIContentFromPathResponse(r));
+    return this.doRequest<PathResponse>(serviceUrl.href)
+      .catch((r) => {
+        return this.buildNetworkError(r);
+      })
+      .then((r) => getIContentFromPathResponse(r));
   }
 
   public async getContentsByRefs(refs: Array<string>): Promise<Array<IContent>> {
@@ -295,7 +297,6 @@ export class ContentDeliveryAPI {
    * @param verb The verb for the generated configuration
    */
   protected getRequestSettings(verb?: Method): AxiosRequestConfig {
-
     let options: AxiosRequestConfig = {
       method: verb ? verb : 'get',
       baseURL: this.config.epiBaseUrl,

@@ -11,7 +11,7 @@ import React from 'react';
 import ComponentNotFound from '../Components/Errors/ComponentNotFound';
 import CoreIComponentLoader from './CoreIComponentLoader';
 export const isIComponentLoader = (toTest) => {
-    return typeof (toTest) === 'object' && typeof (toTest.load) === 'function';
+    return typeof toTest === 'object' && typeof toTest.load === 'function';
 };
 /**
  * Helper class that ensures components can be pre-loaded for server side
@@ -59,7 +59,10 @@ export class ComponentLoader {
         return loader;
     }
     addLoaders(loaders) {
-        loaders.forEach(x => { x.setDebug(this.debug); this.loaders.push(x); });
+        loaders.forEach((x) => {
+            x.setDebug(this.debug);
+            this.loaders.push(x);
+        });
         this.loaders.sort((a, b) => a.order - b.order);
     }
     createLoader(loaderType, add = true) {
@@ -70,7 +73,7 @@ export class ComponentLoader {
     }
     setDebug(debug) {
         this.debug = debug;
-        this.loaders.forEach(x => x.setDebug(debug));
+        this.loaders.forEach((x) => x.setDebug(debug));
     }
     /**
      * Verify if a component is in the cache
@@ -115,18 +118,18 @@ export class ComponentLoader {
         if (this.isPreLoaded(component))
             return Promise.resolve(this.getPreLoadedType(component));
         try {
-            if (this.loading[component]) {
-                return this.loading[component];
-            }
+            return this.loading[component];
         }
         catch (e) {
             // Ignored on purpose
         }
-        this.loading[component] = this.doLoadComponentType(component).then(c => {
+        this.loading[component] = this.doLoadComponentType(component)
+            .then((c) => {
             this.cache[component] = c;
             delete this.loading[component];
             return c;
-        }).catch(() => {
+        })
+            .catch(() => {
             this.cache[component] = ComponentNotFound;
             delete this.loading[component];
             return this.cache[component];
@@ -134,18 +137,23 @@ export class ComponentLoader {
         return this.loading[component];
     }
     doLoadComponentType(component) {
-        const options = this.loaders.filter(x => x.canLoad(component));
+        const options = this.loaders.filter((x) => x.canLoad(component));
         if (!options || options.length === 0)
             return Promise.resolve(ComponentNotFound);
         const tryOption = (idx) => new Promise((resolve, reject) => {
-            options[idx].load(component).then(c => {
+            options[idx]
+                .load(component)
+                .then((c) => {
                 c.displayName = component;
                 resolve(c);
-            }).catch(e => {
+            })
+                .catch((e) => {
                 if (this.debug)
                     console.debug(`CL: Error loading ${component}, resulting in error`, e);
                 if (options[idx + 1]) {
-                    tryOption(idx + 1).then(sc => resolve(sc)).catch(se => reject(se));
+                    tryOption(idx + 1)
+                        .then((sc) => resolve(sc))
+                        .catch((se) => reject(se));
                 }
                 else {
                     reject(`No loader was able to load ${component}`);

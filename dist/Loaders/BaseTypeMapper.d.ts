@@ -36,7 +36,7 @@ export declare abstract class BaseTypeMapper {
     createInstance<T extends IContent>(data: T): BaseIContent<T>;
     getType(typeName: string, throwOnUnknown?: boolean): IContentType | null;
     isCached(typeName: string): boolean;
-    isLoading(typeName: string): boolean;
+    isLoading(typeName: string): Promise<boolean>;
     typeExists(typeName: string): boolean;
 }
 export default BaseTypeMapper;

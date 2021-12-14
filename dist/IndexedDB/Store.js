@@ -11,7 +11,8 @@ export class Store {
     constructor(database, storeName, objectStore) {
         this._storeName = storeName;
         this._database = database;
-        this._idbs = objectStore || this._database.startTransaction(this._storeName, "readonly").getRawStore(this._storeName);
+        this._idbs =
+            objectStore || this._database.startTransaction(this._storeName, 'readonly').getRawStore(this._storeName);
     }
     get Raw() {
         return this._idbs;
@@ -44,8 +45,8 @@ export class Store {
         return new Promise((resolve, reject) => {
             const items = [];
             const request = this._idbs.openCursor();
-            request.onerror = e => reject(e);
-            request.onsuccess = e => {
+            request.onerror = (e) => reject(e);
+            request.onsuccess = (e) => {
                 const cursor = e.target.result;
                 if (cursor) {
                     items.push(cursor.value);
@@ -59,7 +60,7 @@ export class Store {
     }
     get(id) {
         return new Promise((resolve, reject) => {
-            const t = this._database.startTransaction(this._storeName, "readonly");
+            const t = this._database.startTransaction(this._storeName, 'readonly');
             const s = t.Raw.objectStore(this._storeName);
             const r = s.get(id);
             r.onsuccess = (e) => resolve(e.target.result);
@@ -68,7 +69,7 @@ export class Store {
     }
     put(data, id) {
         return new Promise((resolve, reject) => {
-            const t = this._database.startTransaction(this._storeName, "readwrite");
+            const t = this._database.startTransaction(this._storeName, 'readwrite');
             const s = t.Raw.objectStore(this._storeName);
             const r = s.put(data, id);
             r.onerror = (e) => reject(e);
@@ -77,19 +78,21 @@ export class Store {
     }
     putAll(records) {
         return new Promise((resolve, reject) => {
-            const t = this._database.startTransaction(this._storeName, "readwrite");
+            const t = this._database.startTransaction(this._storeName, 'readwrite');
             const s = t.getRawStore(this._storeName);
-            const promises = records.map(record => new Promise((rresolve, rreject) => {
+            const promises = records.map((record) => new Promise((rresolve, rreject) => {
                 const r = s.put(record.data, record.id);
-                r.onerror = e => rreject(e);
+                r.onerror = (e) => rreject(e);
                 r.onsuccess = () => rresolve(true);
             }));
-            Promise.all(promises).then(() => resolve(true)).catch(e => reject(e));
+            Promise.all(promises)
+                .then(() => resolve(true))
+                .catch((e) => reject(e));
         });
     }
     add(data, id) {
         return new Promise((resolve, reject) => {
-            const t = this._database.startTransaction(this._storeName, "readwrite");
+            const t = this._database.startTransaction(this._storeName, 'readwrite');
             const s = t.Raw.objectStore(this._storeName);
             const r = s.add(data, id);
             r.onerror = (e) => reject(e);

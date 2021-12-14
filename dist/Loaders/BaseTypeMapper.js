@@ -17,21 +17,24 @@ export class BaseTypeMapper {
         this.loading = {};
     }
     loadType(typeName) {
-        if (!this.typeExists(typeName)) {
-            throw new Error(`The type ${typeName} is not known within Episerver`);
-        }
-        if (this.isCached(typeName)) {
-            return Promise.resolve(this.getType(typeName, true));
-        }
-        if (!this.isLoading(typeName)) {
-            const me = this;
-            this.loading[typeName] = this.doLoadType(this.map[typeName]).then((t) => {
-                me.cache[typeName] = t;
-                delete me.loading[typeName];
-                return t;
-            });
-        }
-        return this.loading[typeName];
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.typeExists(typeName)) {
+                throw new Error(`The type ${typeName} is not known within Episerver`);
+            }
+            if (this.isCached(typeName)) {
+                return Promise.resolve(this.getType(typeName, true));
+            }
+            if (!this.isLoading(typeName)) {
+                // eslint-disable-next-line @typescript-eslint/no-this-alias
+                const me = this;
+                this.loading[typeName] = this.doLoadType(this.map[typeName]).then((t) => {
+                    me.cache[typeName] = t;
+                    delete me.loading[typeName];
+                    return t;
+                });
+            }
+            return this.loading[typeName];
+        });
     }
     createInstanceAsync(data) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -64,13 +67,15 @@ export class BaseTypeMapper {
         return false; // An exception occured, so not pre-loaded
     }
     isLoading(typeName) {
-        try {
-            return this.loading[typeName] ? true : false;
-        }
-        catch (e) {
-            // Ignore exception
-        }
-        return false; // An exception occured, so not pre-loaded
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return (yield this.loading[typeName]) ? true : false;
+            }
+            catch (e) {
+                // Ignore exception
+            }
+            return false; // An exception occured, so not pre-loaded
+        });
     }
     typeExists(typeName) {
         try {

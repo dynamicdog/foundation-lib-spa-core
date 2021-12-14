@@ -12,7 +12,7 @@ export interface TypeMapperTypeInfo {
  * Static interface for the typemapper, so it can be included
  * in the configuration
  */
-export type TypeMapperType = new() => BaseTypeMapper;
+export type TypeMapperType = new () => BaseTypeMapper;
 
 /**
  * Base implementation for the TypeMapper, which is used to dynamically load
@@ -35,7 +35,7 @@ export abstract class BaseTypeMapper {
    */
   protected abstract doLoadType(typeInfo: TypeMapperTypeInfo): Promise<IContentType>;
 
-  public loadType(typeName: string): Promise<IContentType> {
+  public async loadType(typeName: string): Promise<IContentType> {
     if (!this.typeExists(typeName)) {
       throw new Error(`The type ${typeName} is not known within Episerver`);
     }
@@ -43,6 +43,7 @@ export abstract class BaseTypeMapper {
       return Promise.resolve(this.getType(typeName, true) as IContentType);
     }
     if (!this.isLoading(typeName)) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const me = this;
       this.loading[typeName] = this.doLoadType(this.map[typeName]).then((t) => {
         me.cache[typeName] = t;
@@ -65,7 +66,7 @@ export abstract class BaseTypeMapper {
     return new dataType(data);
   }
 
-  public getType(typeName: string, throwOnUnknown: boolean = true): IContentType | null {
+  public getType(typeName: string, throwOnUnknown = true): IContentType | null {
     if (this.isCached(typeName)) {
       return this.cache[typeName];
     }
@@ -84,9 +85,9 @@ export abstract class BaseTypeMapper {
     return false; // An exception occured, so not pre-loaded
   }
 
-  public isLoading(typeName: string): boolean {
+  public async isLoading(typeName: string): Promise<boolean> {
     try {
-      return this.loading[typeName] ? true : false;
+      return (await this.loading[typeName]) ? true : false;
     } catch (e) {
       // Ignore exception
     }

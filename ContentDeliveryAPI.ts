@@ -11,12 +11,12 @@ import PathResponse, { getIContentFromPathResponse } from './ContentDelivery/Pat
 
 /**
  * ContentDelivery API Wrapper
- * 
+ *
  * @deprecated
  */
 export class ContentDeliveryAPI {
   protected config: AppConfig;
-  protected componentService = '/api/episerver/v2.0/content/';
+  protected componentService = '/api/episerver/v3.0/content/';
   protected websiteService = '/api/episerver/v3/site/';
   protected methodService = '/api/episerver/v3/action/';
   protected debug = false;
@@ -43,7 +43,7 @@ export class ContentDeliveryAPI {
 
   /**
    * ContentDelivery API Wrapper
-   * 
+   *
    * @deprecated
    */
   constructor(pathProvider: PathProvider, config: AppConfig) {
@@ -52,13 +52,11 @@ export class ContentDeliveryAPI {
     this.debug = this.config.enableDebug === true;
   }
 
-  public get currentPathProvider() : PathProvider
-  {
+  public get currentPathProvider(): PathProvider {
     return this.pathProvider;
   }
 
-  public get currentConfig() : AppConfig
-  {
+  public get currentConfig(): AppConfig {
     return this.config;
   }
 
@@ -90,7 +88,7 @@ export class ContentDeliveryAPI {
     verb?: Method,
     data?: object,
   ): Promise<any> {
-    let options = this.getRequestSettings(verb);
+    const options = this.getRequestSettings(verb);
     options.data = data;
     return await this.doRequest<any>(this.getMethodServiceUrl(content, method), options);
   }
@@ -110,7 +108,7 @@ export class ContentDeliveryAPI {
     verb?: Method,
     data?: TypeIn,
   ): Promise<ActionResponse<TypeOut>> {
-    let options = this.getRequestSettings(verb);
+    const options = this.getRequestSettings(verb);
     options.data = data;
     return await this.doRequest<ActionResponse<TypeOut>>(this.getMethodServiceUrl(content, method), options);
   }
@@ -158,16 +156,18 @@ export class ContentDeliveryAPI {
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
     }
-    return this.doRequest<PathResponse>(serviceUrl.href).catch((r) => {
-      return this.buildNetworkError(r);
-    }).then(r => getIContentFromPathResponse(r));
+    return this.doRequest<PathResponse>(serviceUrl.href)
+      .catch((r) => {
+        return this.buildNetworkError(r);
+      })
+      .then((r) => getIContentFromPathResponse(r));
   }
 
   public async getContentsByRefs(refs: Array<string>): Promise<Array<IContent>> {
     if (!refs || refs.length == 0) {
       return Promise.resolve<Array<IContent>>([]);
     }
-    let serviceUrl: URL = new URL(this.config.epiBaseUrl + this.componentService);
+    const serviceUrl: URL = new URL(this.config.epiBaseUrl + this.componentService);
     serviceUrl.searchParams.append('references', refs.join(','));
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
@@ -178,7 +178,7 @@ export class ContentDeliveryAPI {
   }
 
   public async getContentByRef(ref: string): Promise<IContent> {
-    let serviceUrl: URL = new URL(this.config.epiBaseUrl + this.componentService + ref);
+    const serviceUrl: URL = new URL(this.config.epiBaseUrl + this.componentService + ref);
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
     }
@@ -188,7 +188,7 @@ export class ContentDeliveryAPI {
   }
 
   public async getContentByPath(path: string): Promise<PathResponse> {
-    let serviceUrl: URL = new URL(this.config.epiBaseUrl + path);
+    const serviceUrl: URL = new URL(this.config.epiBaseUrl + path);
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
     }
@@ -199,8 +199,8 @@ export class ContentDeliveryAPI {
   }
 
   public async getContentChildren<T extends IContent>(id: ContentReference): Promise<Array<T>> {
-    let itemId: string = ContentLinkService.createApiId(id);
-    let serviceUrl: URL = new URL(this.config.epiBaseUrl + this.componentService + itemId + '/children');
+    const itemId: string = ContentLinkService.createApiId(id);
+    const serviceUrl: URL = new URL(this.config.epiBaseUrl + this.componentService + itemId + '/children');
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
     }
@@ -210,8 +210,8 @@ export class ContentDeliveryAPI {
   }
 
   public async getContentAncestors(link: ContentReference): Promise<Array<IContent>> {
-    let itemId: string = ContentLinkService.createApiId(link);
-    let serviceUrl: URL = new URL(`${this.config.epiBaseUrl}${this.componentService}${itemId}/ancestors`);
+    const itemId: string = ContentLinkService.createApiId(link);
+    const serviceUrl: URL = new URL(`${this.config.epiBaseUrl}${this.componentService}${itemId}/ancestors`);
     if (this.config.autoExpandRequests) {
       serviceUrl.searchParams.append('expand', '*');
     }
@@ -231,7 +231,7 @@ export class ContentDeliveryAPI {
       return Promise.reject('The Content Delivery API has been disabled');
     }
     if (this.isInEditMode()) {
-      let urlObj = new URL(url);
+      const urlObj = new URL(url);
       urlObj.searchParams.append('epieditmode', 'True');
       //Add channel...
       //Add project...
@@ -266,8 +266,7 @@ export class ContentDeliveryAPI {
    * @param verb The verb for the generated configuration
    */
   protected getRequestSettings(verb?: Method): AxiosRequestConfig {
-
-    let options: AxiosRequestConfig = {
+    const options: AxiosRequestConfig = {
       method: verb ? verb : 'get',
       baseURL: this.config.epiBaseUrl,
       withCredentials: true,
@@ -290,7 +289,7 @@ export class ContentDeliveryAPI {
   }
 
   protected getHeaders(customHeaders?: object): object {
-    let defaultHeaders = {
+    const defaultHeaders = {
       Accept: 'application/json',
       'Accept-Language': this.config.defaultLanguage, //@ToDo: Convert to context call, with default
     };
@@ -313,9 +312,9 @@ export class ContentDeliveryAPI {
     return false;
   }
 
-  private counter: number = 0;
+  private counter = 0;
 
-  protected buildNetworkError(reason: any, path: string = ''): NetworkErrorData {
+  protected buildNetworkError(reason: any, path = ''): NetworkErrorData {
     const errorId = ++this.counter;
     return {
       name: {

@@ -25,6 +25,9 @@ export const Router: React.FunctionComponent<RouterProps> = (props) => {
       context: props.context,
       location: props.location,
     };
+
+    if (epi.isDebugActive()) console.warn('[Router SSR] Virtual DOM Node Location: ', props.location);
+
     return <StaticRouter {...staticRouterProps}>{props.children}</StaticRouter>;
   }
 
@@ -124,6 +127,8 @@ export type RoutedContentProps = SwitchProps & {
 export const RoutedContent: React.FunctionComponent<RoutedContentProps> = (props) => {
   const ctx = useEpiserver();
   const switchProps: SwitchProps = { location: props.location };
+  if (ctx.isDebugActive()) console.warn('[Routed Content] Virtual DOM Node Location: ', props.location);
+
   return (
     <Switch {...switchProps}>
       {props.children}

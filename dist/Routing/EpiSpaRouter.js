@@ -10,6 +10,8 @@ export const Router = (props) => {
             context: props.context,
             location: props.location,
         };
+        if (epi.isDebugActive())
+            console.warn('[Router SSR] Virtual DOM Node Location: ', props.location);
         return React.createElement(StaticRouter, Object.assign({}, staticRouterProps), props.children);
     }
     const browserRouterProps = {
@@ -95,6 +97,8 @@ ElementNavigation.displayName = 'Optimizely CMS: Generic click event handler';
 export const RoutedContent = (props) => {
     const ctx = useEpiserver();
     const switchProps = { location: props.location };
+    if (ctx.isDebugActive())
+        console.warn('[Routed Content] Virtual DOM Node Location: ', props.location);
     return (React.createElement(Switch, Object.assign({}, switchProps),
         props.children,
         (props.config || []).map((item, idx) => createRouteNode(item, props.basePath, `${props.keyPrefix}-route-${idx}`, ctx))));

@@ -83,23 +83,15 @@ const ElementNavigation: React.FunctionComponent = (props): React.ReactElement =
         
           newPath = newtargetPath;
 
-          console.log(newtargetSearch, 'newtargetSearch')
-          console.log(searchParam, 'searchParam')
-          if (config.enableDebug) {
-            console.info(newtargetSearch, 'newtargetSearch')
-            console.info(searchParam, 'searchParam')
-
-          }
           if (searchParam?.length > 0) {
             newPath += newtargetSearch?.length > 0 ? newtargetSearch : searchParam;
           }
         }
       }
-      if (config.enableDebug) console.info('newPath', newPath)
-      console.log('newPath', newPath)
+
       // Do not navigate to the same page
       if (newPath === location.pathname) {
-        if (config.enableDebug) console.info('ElementNavigation: Ignoring navigation to same path', newPath, location.pathname);
+        if (config.enableDebug) console.info('ElementNavigation: Ignoring navigation to same path');
         event.preventDefault();
         return false;
       }

@@ -94,7 +94,9 @@ export class ContentLinkService {
                 return out;
             }
         }
-        throw new Error('Unable to generate an Episerver API ID');
+
+        return ''
+        // throw new Error('Unable to generate an Episerver API ID');
     }
 
     /**

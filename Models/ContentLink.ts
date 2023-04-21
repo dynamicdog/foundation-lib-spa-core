@@ -49,8 +49,8 @@ export class ContentLinkService {
      */
     public static createLanguageId(reference: ContentReference, languageCode?: string, editModeId = false) : ContentApiId 
     {
-        const baseId = this.createApiId(reference, true, editModeId);
-
+        const baseId = (reference && editModeId) ? this.createApiId(reference, true, editModeId) : '';
+ 
         if (this.referenceIsIContent(reference) && reference.language?.name)
             return `${ baseId }___${ reference.language.name }`;
 

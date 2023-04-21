@@ -514,7 +514,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
       }
 
       if (response.status === 401) {
-        const data = response.data || this.createNetworkErrorResponse('Empty response', response);
+        const data = this.createNetworkErrorResponse('unauthorized', response);
         const ctx: IContentDeliveryResponseContext = {
           status: response.status,
           statusText: response.statusText,

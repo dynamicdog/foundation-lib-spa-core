@@ -111,7 +111,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
         method: 'POST',
         data: request,
         maxRedirects: 0, // Fail on redirect
-        transformRequest: (data: object, headers: AxiosHeaders): string => {
+        transformRequest: (data: Record<string, string | number | boolean>, headers: AxiosHeaders): string => {
           headers['Content-Type'] = 'application/x-www-form-urlencoded';
           return Object.entries(data)
             .map((x) => `${encodeURIComponent(x[0])}=${encodeURIComponent(x[1])}`)
@@ -512,22 +512,19 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
           );
         throw new Error(`${response.status}: ${response.statusText}`);
       }
-
-      if (response.status === 401) {
-        const data = this.createNetworkErrorResponse('unauthorized', response);
-        const ctx: IContentDeliveryResponseContext = {
-          status: response.status,
-          statusText: response.statusText,
-          method: requestConfig.method?.toLowerCase() || 'default',
-        };
-        return [data, ctx];
-      }
       
       if (response.status == 301 || response.status == 302) {
         window.location.href = response.headers["redirectUrl"];
       }
 
-      const data = response.data || this.createNetworkErrorResponse('Empty response', response);
+      let data: T | NetworkErrorData<string>;
+
+      if (response.status === 401) {
+        data = this.createNetworkErrorResponse('Unauthorized', response)
+      } else {
+        data = response.data || this.createNetworkErrorResponse('Empty response', response);
+      }
+
       const ctx: IContentDeliveryResponseContext = {
         status: response.status,
         statusText: response.statusText,
@@ -617,6 +614,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
         value: error,
       },
       contentType: ['Errors', 'NetworkError'],
+      status: response?.status.toString(),
     };
   }
 }

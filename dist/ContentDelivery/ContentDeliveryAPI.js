@@ -441,7 +441,13 @@ export class ContentDeliveryAPI {
                 if (response.status == 301 || response.status == 302) {
                     window.location.href = response.headers["redirectUrl"];
                 }
-                const data = response.data || this.createNetworkErrorResponse('Empty response', response);
+                let data;
+                if (response.status === 401) {
+                    data = this.createNetworkErrorResponse('Unauthorized', response);
+                }
+                else {
+                    data = response.data || this.createNetworkErrorResponse('Empty response', response);
+                }
                 const ctx = {
                     status: response.status,
                     statusText: response.statusText,
@@ -515,6 +521,7 @@ export class ContentDeliveryAPI {
                 value: error,
             },
             contentType: ['Errors', 'NetworkError'],
+            status: response === null || response === void 0 ? void 0 : response.status.toString(),
         };
     }
 }

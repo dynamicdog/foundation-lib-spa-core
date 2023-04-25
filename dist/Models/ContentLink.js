@@ -25,7 +25,7 @@ export class ContentLinkService {
      */
     static createLanguageId(reference, languageCode, editModeId = false) {
         var _a;
-        const baseId = this.createApiId(reference, true, editModeId);
+        const baseId = (reference && editModeId) ? this.createApiId(reference, true, editModeId) : '';
         if (this.referenceIsIContent(reference) && ((_a = reference.language) === null || _a === void 0 ? void 0 : _a.name))
             return `${baseId}___${reference.language.name}`;
         if (!languageCode)
@@ -42,39 +42,45 @@ export class ContentLinkService {
      * @returns The API key for the provided content reference
      */
     static createApiId(ref, preferGuid = true, editModeId = false) {
-        if (this.referenceIsString(ref)) {
-            return ref;
-        }
-        let link = null;
-        if (this.referenceIsIContent(ref)) {
-            link = ref.contentLink;
-        }
-        if (this.referenceIsContentLink(ref)) {
-            link = ref;
-        }
-        if (link) {
-            if ((preferGuid && link.guidValue) || !link.id) {
-                return link.guidValue;
+        try {
+            if (this.referenceIsString(ref)) {
+                return ref;
             }
-            else {
-                let out = link.id.toString();
-                if (editModeId && link.workId) {
-                    out = `${out}_${link.workId}`;
-                }
-                if (link.providerName) {
-                    out = `${out}__${link.providerName}`;
-                }
-                return out;
+            let link = null;
+            if (this.referenceIsIContent(ref)) {
+                link = ref.contentLink;
             }
+            if (this.referenceIsContentLink(ref)) {
+                link = ref;
+            }
+            if (link) {
+                if ((preferGuid && link.guidValue) || !link.id) {
+                    return link.guidValue;
+                }
+                else {
+                    let out = link.id.toString();
+                    if (editModeId && link.workId) {
+                        out = `${out}_${link.workId}`;
+                    }
+                    if (link.providerName) {
+                        out = `${out}__${link.providerName}`;
+                    }
+                    return out;
+                }
+            }
+            return '';
         }
-        throw new Error('Unable to generate an Episerver API ID');
+        catch (error) {
+            // throw new Error('Unable to generate an Episerver API ID');
+            return '';
+        }
     }
     /**
-     * Try to resolve a route from a content reference
-     *
-     * @param   ref
-     * @returns
-     */
+      * Try to resolve a route from a content reference
+      *
+      * @param   ref
+      * @returns
+      */
     static createRoute(ref) {
         let link = null;
         if (this.referenceIsIContent(ref)) {

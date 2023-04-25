@@ -1,11 +1,11 @@
 import IContent from './IContent';
-export declare type ContentReference = IContent | ContentLink | string;
-export declare type ContentApiId = string;
+export type ContentReference = IContent | ContentLink | string;
+export type ContentApiId = string;
 /**
  * Describe a content-link item as returned by the Episerver
  * Content Delivery API.
  */
-export declare type ContentLink = {
+export type ContentLink = {
     id: number;
     workId?: number;
     guidValue: string;
@@ -40,11 +40,11 @@ export declare class ContentLinkService {
      */
     static createApiId(ref: ContentReference, preferGuid?: boolean, editModeId?: boolean): ContentApiId;
     /**
-     * Try to resolve a route from a content reference
-     *
-     * @param   ref
-     * @returns
-     */
+      * Try to resolve a route from a content reference
+      *
+      * @param   ref
+      * @returns
+      */
     static createRoute(ref: ContentReference): string | null;
     static createHref(ref: ContentReference): string | null;
     protected static getUrlFromLink(link: ContentLink): string;

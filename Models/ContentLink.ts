@@ -15,6 +15,7 @@ export type ContentLink = {
   providerName?: string;
   url: string;
   expanded?: IContent;
+  responseId?: number
 }
 
 export class ContentLinkService {

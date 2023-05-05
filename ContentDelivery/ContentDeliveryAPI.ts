@@ -604,6 +604,7 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
       contentLink: {
         guidValue: UUID.v4(),
         id: errorId,
+        responseId: response?.data?.contentLink?.id,
         providerName: 'EpiserverSPA',
         workId: 0,
         url: '',

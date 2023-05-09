@@ -433,20 +433,25 @@ export class ContentDeliveryAPI {
                 if (this._config.Debug)
                     console.info('ContentDeliveryAPI Requesting', requestConfig.method + ' ' + requestConfig.url, requestConfig.data);
                 const response = yield this.Axios.request(requestConfig);
-                if (response.status >= 400 && !returnOnError && response.status !== 401) {
+                const statusExceptions = [401, 403];
+                if (response.status >= 400 && !returnOnError && !statusExceptions.includes(response.status)) {
                     if (this._config.Debug)
                         console.info(`ContentDeliveryAPI Error ${response.status}: ${response.statusText}`, requestConfig.method + ' ' + requestConfig.url);
                     throw new Error(`${response.status}: ${response.statusText}`);
                 }
                 if (response.status == 301 || response.status == 302) {
-                    window.location.href = response.headers["redirectUrl"];
+                    window.location.href = response.headers['redirectUrl'];
                 }
                 let data;
-                if (response.status === 401) {
-                    data = this.createNetworkErrorResponse('Unauthorized', response);
-                }
-                else {
-                    data = response.data || this.createNetworkErrorResponse('Empty response', response);
+                switch (response.status) {
+                    case 401:
+                        data = this.createNetworkErrorResponse('Unauthorized', response);
+                        break;
+                    case 403:
+                        data = this.createNetworkErrorResponse('Forbidden', response);
+                        break;
+                    default:
+                        data = response.data || this.createNetworkErrorResponse('Empty response', response);
                 }
                 const ctx = {
                     status: response.status,

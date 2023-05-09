@@ -512,17 +512,22 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
           );
         throw new Error(`${response.status}: ${response.statusText}`);
       }
-      
+
       if (response.status == 301 || response.status == 302) {
-        window.location.href = response.headers["redirectUrl"];
+        window.location.href = response.headers['redirectUrl'];
       }
 
       let data: T | NetworkErrorData<string>;
 
-      if (response.status === 401) {
-        data = this.createNetworkErrorResponse('Unauthorized', response)
-      } else {
-        data = response.data || this.createNetworkErrorResponse('Empty response', response);
+      switch (response.status) {
+        case 401:
+          data = this.createNetworkErrorResponse('Unauthorized', response);
+          break;
+        case 403:
+          data = this.createNetworkErrorResponse('Forbidden', response);
+          break;
+        default:
+          data = response.data || this.createNetworkErrorResponse('Empty response', response);
       }
 
       const ctx: IContentDeliveryResponseContext = {

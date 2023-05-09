@@ -504,9 +504,8 @@ export class ContentDeliveryAPI implements IContentDeliveryAPi {
           requestConfig.data,
         );
       const response = await this.Axios.request<T>(requestConfig);
-      const statusExceptions = [401, 403];
 
-      if (response.status >= 400 && !returnOnError && !statusExceptions.includes(response.status)) {
+      if (response.status >= 400 && !returnOnError && response.status !== 401 && response.status !== 403) {
         if (this._config.Debug)
           console.info(
             `ContentDeliveryAPI Error ${response.status}: ${response.statusText}`,

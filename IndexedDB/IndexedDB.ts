@@ -10,10 +10,10 @@ export class IndexedDB
 
     protected _name : string;
     protected _version : number;
-    protected _isAvailable : boolean = false;
+    protected _isAvailable  = false;
     protected _idb : Database|undefined = undefined;
     protected _schemaUpgrade : SchemaUpgrade|undefined = undefined;
-    protected _debug : boolean = false;
+    protected _debug  = false;
 
     public get IsAvailable() : boolean { return this._isAvailable; }
     public get IsOpen() : boolean { return this._idb ? true : false; }
@@ -21,16 +21,16 @@ export class IndexedDB
     public get Version() : number { return this._version; }
     public get Database() : Database|undefined { return this._idb; }
 
-    constructor(name: string, version: number, schemaUpgrade?: SchemaUpgrade, autoOpen?: boolean, debug: boolean = false) 
+    constructor(name: string, version: number, schemaUpgrade?: SchemaUpgrade, autoOpen?: boolean, debug = false) 
     {
         this._name = name;
         this._version = version;
         this._schemaUpgrade = schemaUpgrade;
         this._debug = debug;
-        if (window.indexedDB) {
-            this._isAvailable = true;
-            if (autoOpen) this.open();
-        }
+        // if (window.indexedDB) {
+        //     this._isAvailable = true;
+        //     if (autoOpen) this.open();
+        // }
     }
 
     public open() : Promise<Database>

@@ -1,5 +1,5 @@
 import { AxiosAdapter } from 'axios';
-export type CachingFetchAdapter = AxiosAdapter & {
+export declare type CachingFetchAdapter = AxiosAdapter & {
     isCachable?: ((request: Readonly<Request>) => boolean)[];
 };
 /**

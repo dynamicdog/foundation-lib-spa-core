@@ -1,5 +1,5 @@
 import ContentLink from './ContentLink';
-export type ContentRootList = {
+export declare type ContentRootList = {
     [key: string]: ContentLink;
 };
 export default ContentRootList;

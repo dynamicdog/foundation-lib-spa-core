@@ -1,11 +1,11 @@
 import IContent from './IContent';
-export type ContentReference = IContent | ContentLink | string;
-export type ContentApiId = string;
+export declare type ContentReference = IContent | ContentLink | string;
+export declare type ContentApiId = string;
 /**
  * Describe a content-link item as returned by the Episerver
  * Content Delivery API.
  */
-export type ContentLink = {
+export declare type ContentLink = {
     id: number;
     workId?: number;
     guidValue: string;

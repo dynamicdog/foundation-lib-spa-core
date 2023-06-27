@@ -1,9 +1,9 @@
 export class Transaction {
-    get Raw() {
-        return this._idbt;
-    }
     constructor(idbt) {
         this._idbt = idbt;
+    }
+    get Raw() {
+        return this._idbt;
     }
     hasStore(storeName) {
         return this._idbt.objectStoreNames.contains(storeName);

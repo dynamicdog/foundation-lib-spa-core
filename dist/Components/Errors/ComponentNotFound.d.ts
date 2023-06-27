@@ -1,6 +1,6 @@
 import React from 'react';
 import IContent from '../../Models/IContent';
-export type ComponentNotFoundProps = {
+export declare type ComponentNotFoundProps = {
     data?: IContent;
     contentType?: string;
 };

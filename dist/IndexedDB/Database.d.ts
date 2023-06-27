@@ -13,7 +13,7 @@ export declare class Database {
     getStore<T = any>(name: string): Store<T>;
     hasStore(name: string): boolean;
 }
-export type TableIndex = {
+export declare type TableIndex = {
     name: string;
     keyPath: string;
     unique?: boolean;

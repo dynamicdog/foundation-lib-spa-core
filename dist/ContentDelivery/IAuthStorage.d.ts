@@ -1,5 +1,5 @@
 import { IOAuthSuccessResponse } from './IAuthService';
-export type IAuthStorage = {
+export declare type IAuthStorage = {
     clearToken: () => boolean;
     storeToken: (token: IOAuthSuccessResponse) => boolean;
     hasToken: () => boolean;

@@ -1,2 +1,2 @@
-export type ContentTypePath = string[];
+export declare type ContentTypePath = string[];
 export default ContentTypePath;

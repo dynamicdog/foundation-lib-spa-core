@@ -11,5 +11,5 @@ export interface IRouteConfigItem extends RouteProps {
     children?: ((props: IRouteConfigComponentProps<any>) => React.ReactNode) | React.ReactNode;
     routes?: IRouteConfigItem[];
 }
-type IRouteConfig = IRouteConfigItem[];
+declare type IRouteConfig = IRouteConfigItem[];
 export default IRouteConfig;

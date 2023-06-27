@@ -1,4 +1,4 @@
-export type Language = {
+export declare type Language = {
     name: string;
     displayName: string;
     isMasterLanguage?: boolean;

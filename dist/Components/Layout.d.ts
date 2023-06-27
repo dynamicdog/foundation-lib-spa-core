@@ -1,9 +1,9 @@
 import React, { ComponentType, FunctionComponent } from 'react';
 import IEpiserverContext from '../Core/IEpiserverContext';
-export type LayoutProps = React.PropsWithChildren<{
+export declare type LayoutProps = React.PropsWithChildren<{
     context?: IEpiserverContext;
 }>;
-export type LayoutComponent<P extends LayoutProps = LayoutProps> = ComponentType<P>;
+export declare type LayoutComponent<P extends LayoutProps = LayoutProps> = ComponentType<P>;
 /**
  * A default layout implementation, simply wrapping the site in a div
  *
